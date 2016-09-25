@@ -4,6 +4,9 @@ from tingbot import *
 bar_max = 300.0
 bar_min = 20.0
 
+bar_height = 5
+indicator_height = bar_height + 40
+
 
 # right button increases brightness by one
 @right_button.press
@@ -68,7 +71,7 @@ def brightness_decrease_25 ():
 @once (seconds=0.25)
 def on_stratup ():
     screen_update (160, 200, 50)
-    screen.rectangle (xy=(160,200), size=(10,25), color='blue')
+    #screen.rectangle (xy=(160,200), size=(10,25), color='blue')
 
 
 # update screen brightness, slider position and brightness text
@@ -78,15 +81,18 @@ def screen_update (x_slider, y_slider, brightness):
 
     screen.fill ('black')
     screen.text (str (brightness), align='center', color='white', font_size=50)
-    screen.rectangle (xy=(160,200), size=(280,25), color='grey')
-    screen.rectangle (xy=(x_slider,y_slider), size=(10,25), color='blue')
+    screen.rectangle (xy=(160,200), size=(280,bar_height), color='grey')
     
-    global gbl_x_slider
-    gbl_x_slider = x_slider
+    # thin rectangle indicator
+    #screen.rectangle (xy=(x_slider,y_slider), size=(10,indicator_height), color='blue')
+
+    # full rectangle indicating brightness
+    #screen.rectangle (xy=(x_slider,y_slider), size=((x_slider-20),indicator_height), color='blue', align='right')
     
-    global gbl_brightness
-    gbl_brightness = brightness
+    # circle image indicator
+    screen.image ("indicator.png", xy=(x_slider, y_slider), scale='fit', max_width=indicator_height, max_height=indicator_height)
     
+
 # compute x location of slider based on brightness
 def compute_x (brightness):
     x = ((brightness / 100.0) * (bar_max - bar_min)) + bar_min
@@ -99,7 +105,7 @@ def compute_brightness (x):
     return int(percentage)
 
 # move slider and brightness based on touchscreen
-@touch (xy=(160,200), size=(280,25))
+@touch (xy=(160,200), size=(280,indicator_height))
 def on_touch (xy, action):
     
     x = xy [0]
