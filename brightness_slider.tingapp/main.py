@@ -80,7 +80,14 @@ def screen_update (x_slider, y_slider, brightness):
     screen.brightness = brightness
 
     screen.fill ('black')
-    screen.text (str (brightness), align='center', color='white', font_size=50)
+    
+    # brightnes numeric display
+    screen.text (str (brightness), align='center', color='white', font_size=100)
+    
+    # exit buton
+    screen.image ("exit.png", align='topright', max_width=indicator_height, max_height=indicator_height)
+    
+    # slider bar
     screen.rectangle (xy=(160,200), size=(280,bar_height), color='grey')
     
     # thin rectangle indicator
@@ -106,7 +113,7 @@ def compute_brightness (x):
 
 # move slider and brightness based on touchscreen
 @touch (xy=(160,200), size=(280,indicator_height))
-def on_touch (xy, action):
+def on_touch_slider (xy, action):
     
     x = xy [0]
     y = xy [1]
@@ -118,6 +125,21 @@ def on_touch (xy, action):
 #        if (x > 20 and x < 300) and (y > 188 and y < 212):
         if (x >= 20 and x <= 300): # only concerned within x
             screen_update (x, 200, compute_brightness (x))
+
+# move slider and brightness based on touchscreen
+@touch (align='topright', size=(indicator_height,indicator_height))
+def on_touch_slider (xy, action):
+    
+    # on down event reposition indicator, but only within bounds of scrollbar
+    if (action == "down"):
+        
+        # display exit message then quit
+        screen.fill ('black')
+        screen.text ('exiting...', align='center', color='white', font_size=50)
+        
+        screen.update ()
+        
+        quit ()
 
 
 tingbot.run()
